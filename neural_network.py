@@ -15,5 +15,4 @@ class house_price_network(nn.Module):
 
     def predic(self, x):
         X = torch.Tensor(x)
-        x_vertical = X.resize(1, 1, )
-        print(x_vertical)
+        self.layer(X)
