@@ -40,7 +40,7 @@ df = pnd.read_csv('Housing.csv')
 df = data_clean(df)
 normalized_df = normalizing(df)
 nn = neural_network.house_price_network(12)
-train(normalized_df, 1, 200, 30,  40)
+train(normalized_df, 1, 200, 50,  40)
 for i in range(205, 215):
     print(f'actuale value{df["price"].iloc[i]}')
     print(f'predicted value{nn.predict(normalized_df.iloc[i][1:].values.tolist())}')
