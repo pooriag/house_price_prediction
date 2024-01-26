@@ -19,13 +19,13 @@ def normalizing(df):
     df[df.columns[1:]] = (df[df.columns[1:]] - mean) / std
     return df
 
-def random_train_sample(df, start, end, number):
+def random_sample(df, start, end, number):
     return df.iloc[[random.randint(start, end) for i in range(number)]]
 
-def train(df, start, end, number, iteration):
+def train(df, number, iteration):
 
     for i in range(iteration):
-        sample = random_train_sample(df, start, end, number)
+        sample = random_sample(df, 0, len(df) - 1, number)
         nn.train(sample[sample.columns[1:]].values.tolist(), sample[sample.columns[0]].values.tolist())
 
 def plot_losses(losses):
@@ -39,10 +39,18 @@ def plot_losses(losses):
 df = pnd.read_csv('Housing.csv')
 df = data_clean(df)
 normalized_df = normalizing(df)
+
+df_train = normalized_df[normalized_df.index % 2 == 0]
+df_test = normalized_df[(normalized_df.index % 2 == 1) & (normalized_df.index % 3 != 0)]
+df_eval = normalized_df[(normalized_df.index % 2 == 1) & (normalized_df.index % 3 == 0)]
+
 nn = neural_network.house_price_network(12)
-train(normalized_df, 1, 200, 50,  40)
-for i in range(205, 215):
-    print(f'actuale value{df["price"].iloc[i]}')
-    print(f'predicted value{nn.predict(normalized_df.iloc[i][1:].values.tolist())}')
+
+train(df_train, 50,  40)
+
+test_sample = random_sample(df_test, 0, len(df_test) - 1, 15)
+for i in range(len(test_sample)):
+    print(f'actuale value: {test_sample["price"].iloc[i]}')
+    print(f'predicted value: {nn.predict(test_sample.iloc[i][1:].values.tolist())}')
 
 plot_losses(nn.losses)
